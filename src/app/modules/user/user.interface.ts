@@ -18,12 +18,13 @@ export type TUser = {
     city: string;
     state: string;
     postalCode: string;
-  };
+  }[];
   authentication?: {
     isResetPassword: boolean;
     oneTimeCode: number;
     expireAt: Date;
   };
+  passwordChangedAt?: Date;
 };
 export type UserModal = {
     isExistUserById(id: string): any;
@@ -36,3 +37,15 @@ export type UserModal = {
     ): boolean;
   } & Model<TUser>;
   
+
+
+
+  export type TReturnGetAllUsers={
+    meta?: {
+      page: number;
+      limit: number;
+      totalPage: number;
+      total: number;
+    };
+    result: TUser[];
+  }
