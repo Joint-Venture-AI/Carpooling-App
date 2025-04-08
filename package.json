@@ -35,5 +35,28 @@
 		"eslint-config-prettier": "^10.1.1",
 		"ts-node-dev": "^2.0.0",
 		"typescript": "^5.8.3"
-	}
+	},
+	"name": "carpooling-app",
+	"version": "1.0.0",
+	"main": "index.js",
+	"scripts": {
+		"dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+		"lint:check": "eslint --ignore-path .eslintignore --ext .js,.ts",
+		"lint:fix": "lint . --fix",
+		"prettier:check": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
+		"prettier:fix": "prettier --write .",
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "node dist/server.js"
+	  },
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/abdullahalkafi-dev/Carpooling-App.git"
+	},
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/abdullahalkafi-dev/Carpooling-App/issues"
+	},
+	"homepage": "https://github.com/abdullahalkafi-dev/Carpooling-App#readme",
+	"description": ""
 }

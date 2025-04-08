@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2020",                         // Modern JS target (ES6+). You can also use ESNext if your runtime supports it.
-    "module": "ES6",                            // Use ES6 module system (import/export)
+    "module": "CommonJS",                            // Use ES6 module system (import/export)
     "rootDir": "./src",                         // Where your TypeScript files live
     "outDir": "./dist",                         // Where the compiled JS goes
     "moduleResolution": "node",                 // Resolves node-style imports

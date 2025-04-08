@@ -2,14 +2,15 @@ import colors from 'colors';
 import mongoose from 'mongoose';
 
 
-import config from './config';
-import seedSuperAdmin from './DB';
+
+// import seedSuperAdmin from './DB';
 import http from 'http';
 import { errorLogger, logger } from './shared/logger';
 
 import redisClient from './util/redisClient';
 import app from './app';
 import { setupSocket } from './socket/socket';
+import config from './config';
 
 //uncaught exception
 process.on('uncaughtException', error => {
