@@ -1,9 +1,9 @@
-import { Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
-import catchAsync from '../../../shared/catchAsync';
-import sendResponse from '../../../shared/sendResponse';
-import { AuthService } from './auth.service';
-import config from '../../../config';
+import { Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
+import catchAsync from "../../../shared/catchAsync";
+import sendResponse from "../../../shared/sendResponse";
+import { AuthService } from "./auth.service";
+import config from "../../../config";
 
 const verifyEmail = catchAsync(async (req: Request, res: Response) => {
   const { ...verifyData } = req.body;
@@ -21,15 +21,15 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
   const { ...loginData } = req.body;
   const result: any = await AuthService.loginUserFromDB(loginData);
 
-  res.cookie('refreshToken', result.refreshToken, {
-    secure: config.node_env === 'production',
+  res.cookie("refreshToken", result.refreshToken, {
+    secure: config.node_env === "production",
     httpOnly: true,
   });
 
   sendResponse(res, {
     success: true,
     statusCode: StatusCodes.OK,
-    message: 'User login successfully',
+    message: "User login successfully",
     data: result,
   });
 });
@@ -41,7 +41,7 @@ const forgetPassword = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     success: true,
     statusCode: StatusCodes.OK,
-    message: 'Please check your email, we send a OTP!',
+    message: "Please check your email, we send a OTP!",
     data: result,
   });
 });
@@ -54,7 +54,7 @@ const resetPassword = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     success: true,
     statusCode: StatusCodes.OK,
-    message: 'Password reset successfully',
+    message: "Password reset successfully",
     data: result,
   });
 });
@@ -67,7 +67,7 @@ const changePassword = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     success: true,
     statusCode: StatusCodes.OK,
-    message: 'Password changed successfully',
+    message: "Password changed successfully",
   });
 });
 
@@ -78,19 +78,7 @@ const deleteAccount = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     success: true,
     statusCode: StatusCodes.OK,
-    message: 'Account Deleted successfully',
-    data: result,
-  });
-});
-
-const newAccessToken = catchAsync(async (req: Request, res: Response) => {
-  const { token } = req.body;
-  const result = await AuthService.newAccessTokenToUser(token);
-
-  sendResponse(res, {
-    success: true,
-    statusCode: StatusCodes.OK,
-    message: 'Generate Access Token successfully',
+    message: "Account Deleted successfully",
     data: result,
   });
 });
@@ -102,5 +90,4 @@ export const AuthController = {
   resetPassword,
   changePassword,
   deleteAccount,
-  newAccessToken,
 };

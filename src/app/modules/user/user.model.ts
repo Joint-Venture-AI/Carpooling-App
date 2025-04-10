@@ -3,7 +3,7 @@ import { TUser, UserModal } from "./user.interface";
 import bcrypt from "bcryptjs";
 import config from "../../../config";
 import mongooseLeanVirtuals from "mongoose-lean-virtuals";
-const userSchema = new Schema<TUser,UserModal>(
+const userSchema = new Schema<TUser, UserModal>(
   {
     firstName: {
       type: String,
@@ -207,8 +207,14 @@ userSchema.pre("save", async function (next) {
   next();
 });
 // Remove password field from query results
+
 userSchema.pre(/^find/, function (this: any, next) {
-  this.select("-password");
+  if (this.getQuery && this.getProjection) {
+    const projection = this.getProjection();
+    if (!projection || Object.keys(projection).length === 0) {
+      this.select("-password");
+    }
+  }
   next();
 });
 
@@ -223,4 +229,4 @@ userSchema.pre("findOneAndUpdate", function (this: any, next) {
 // Plugin to include virtuals in lean queries.
 userSchema.plugin(mongooseLeanVirtuals);
 
-export const User = model<TUser,UserModal>("User", userSchema, "users");
+export const User = model<TUser, UserModal>("User", userSchema, "users");

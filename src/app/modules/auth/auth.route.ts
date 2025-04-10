@@ -8,23 +8,22 @@ const router = express.Router();
 
 router.post(
   "/login",
-  validateRequest(AuthValidation.createLoginZodSchema),
+  validateRequest(AuthValidation.Login),
   AuthController.loginUser
 );
-router.post("/refresh-token", AuthController.newAccessToken);
 router.post(
   "/forgot-password",
-  validateRequest(AuthValidation.createForgetPasswordZodSchema),
+  validateRequest(AuthValidation.createForgetPassword),
   AuthController.forgetPassword
 );
 router.post(
   "/verify-email",
-  validateRequest(AuthValidation.createVerifyEmailZodSchema),
+  validateRequest(AuthValidation.createVerifyEmail),
   AuthController.verifyEmail
 );
 router.post(
   "/reset-password",
-  validateRequest(AuthValidation.createResetPasswordZodSchema),
+  validateRequest(AuthValidation.createResetPassword),
   AuthController.resetPassword
 );
 router.delete(
@@ -35,7 +34,7 @@ router.delete(
 router.post(
   "/change-password",
   auth(USER_ROLES.ADMIN, USER_ROLES.USER),
-  validateRequest(AuthValidation.createChangePasswordZodSchema),
+  validateRequest(AuthValidation.createChangePassword),
   AuthController.changePassword
 );
 export const AuthRoutes: Router = router;

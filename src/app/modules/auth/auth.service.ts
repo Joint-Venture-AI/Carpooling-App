@@ -22,11 +22,13 @@ import { TUser } from "../user/user.interface";
 //login
 const loginUserFromDB = async (payload: Partial<TLoginData>) => {
   const { email, password } = payload;
+  console.log(payload);
   if (!password) {
     throw new AppError(StatusCodes.BAD_REQUEST, "Password is required");
   }
 
   const isExistUser = await User.findOne({ email }).select("+password");
+  console.log(isExistUser);
   if (!isExistUser) {
     throw new AppError(StatusCodes.BAD_REQUEST, "User doesn't exist!");
   }
@@ -60,7 +62,7 @@ const loginUserFromDB = async (payload: Partial<TLoginData>) => {
 };
 
 const forgetPasswordToDB = async (email: string) => {
-  const isExistUser:Partial<TUser> = await User.isExistUserByEmail(email);
+  const isExistUser: Partial<TUser> = await User.isExistUserByEmail(email);
   if (!isExistUser) {
     throw new AppError(StatusCodes.BAD_REQUEST, "User doesn't exist!");
   }
@@ -70,8 +72,13 @@ const forgetPasswordToDB = async (email: string) => {
   const value = {
     otp,
     email: isExistUser.email,
-    name:isExistUser.firstName!,
-    theme:"theme-green"  as "theme-green" | "theme-red" | "theme-purple" | "theme-orange" | "theme-blue", 
+    name: isExistUser.firstName!,
+    theme: "theme-green" as
+      | "theme-green"
+      | "theme-red"
+      | "theme-purple"
+      | "theme-orange"
+      | "theme-blue",
   };
   const forgetPassword = emailTemplate.resetPassword(value);
 
