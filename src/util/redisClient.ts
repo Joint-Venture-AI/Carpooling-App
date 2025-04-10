@@ -1,4 +1,3 @@
-// redisClient.ts
 import { createClient, RedisClientType } from 'redis';
 
 class RedisClient {
@@ -52,6 +51,12 @@ class RedisClient {
     } catch (err) {
       console.error(`Error deleting key ${key}:`, err);
     }
+  }
+  
+  // New method to support keys lookup
+  async keys(pattern: string): Promise<string[]> {
+    await this.ensureConnected();
+    return this.client.keys(pattern);
   }
 }
 

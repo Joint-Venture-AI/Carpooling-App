@@ -22,10 +22,13 @@ const getAllUsers = async (
     .sort()
     .paginate()
     .fields();
+
   const result = await userQuery.modelQuery;
   console.log(result);
   const meta = await userQuery.countTotal();
+
   await UserCacheManage.setCacheListWithQuery(query, { result, meta });
+
   return { result, meta };
 };
 const getUserById = async (
@@ -34,11 +37,14 @@ const getUserById = async (
   // First, try to retrieve the user from cache.
   const cachedUser = await UserCacheManage.getCacheSingleUser(id);
   if (cachedUser) return cachedUser;
+
   // If not cached, query the database using lean with virtuals enabled.
   const user = await User.findById(id);
+
   if (!user) {
     throw new AppError(StatusCodes.NOT_FOUND, "User not found");
   }
+
   // Cache the freshly retrieved user data.
   await UserCacheManage.setCacheSingleUser(id, user);
   return user;

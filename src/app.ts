@@ -1,11 +1,11 @@
-import cors from 'cors';
-import express, { Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
-import globalErrorHandler from './app/middlewares/globalErrorHandler';
-import router from './routes';
-import http from 'http';
-import cookieParser from 'cookie-parser';
-import { Morgan } from './shared/morgen';
+import cors from "cors";
+import express, { Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
+import globalErrorHandler from "./app/middlewares/globalErrorHandler";
+import router from "./routes";
+import http from "http";
+import cookieParser from "cookie-parser";
+import { Morgan } from "./shared/morgen";
 // import admin from 'firebase-admin';
 // import ServiceAccount from '../medmeet-admin.json';
 const app: express.Application = express();
@@ -19,7 +19,7 @@ app.use(Morgan.errorHandler);
 //body parser
 app.use(
   cors({
-    origin: '*',
+    origin: "*",
     credentials: true,
   })
 );
@@ -28,13 +28,13 @@ app.use(express.json());
 app.use(cookieParser());
 
 //file retrieve
-app.use(express.static('uploads'));
+app.use(express.static("uploads"));
 
 //router
-app.use('/api/v1', router);
+app.use("/api/v1", router);
 
 //live response
-app.get('/', (req: Request, res: Response) => {
+app.get("/", (req: Request, res: Response) => {
   res.send(
     ` <div style="display: flex; align-items: center; justify-content: center; height: 100vh; background: #f5f3ff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
     <div style="text-align: center; padding: 2rem 3rem; background-color: #ffffff; border-radius: 16px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);">
@@ -58,7 +58,7 @@ app.use(globalErrorHandler);
 app.use((req, res) => {
   res.status(StatusCodes.NOT_FOUND).json({
     success: false,
-    message: 'Not found',
+    message: "Not found",
     errorMessages: [
       {
         path: req.originalUrl,

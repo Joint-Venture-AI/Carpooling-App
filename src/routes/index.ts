@@ -5,7 +5,7 @@ const router: Router = express.Router();
 
 const apiRoutes = [
   {
-    path: "user",
+    path: "/user",
     route: UserRoutes,
   },
 ];

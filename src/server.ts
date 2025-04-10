@@ -26,12 +26,14 @@ async function main() {
 
     const port =
       typeof config.port === 'number' ? config.port : Number(config.port);
+      console.log(port, 'port');
       await redisClient.connect();
     server.listen(port, config.ip_address as string, () => {
       logger.info(
-        colors.yellow(`♻️  Application listening on port:${config.port}`)
+        colors.yellow(`♻️  Application listening ${config.ip_address} on port:${config.port}`)
       );
     });
+    
     //socket
     setupSocket(server);
   } catch (error) {

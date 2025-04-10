@@ -1,2 +1,5 @@
-
-export const USER_ROLES =["ADMIN","USER"] as const;
+export enum USER_ROLES {
+    ADMIN = 'ADMIN',
+    USER = 'USER',
+  }
+  

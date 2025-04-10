@@ -1,9 +1,10 @@
 import { model, Schema } from "mongoose";
-import { TUser, UserModal } from "./user.interface";
+import { TUser } from "./user.interface";
+import { USER_ROLES } from "./user.constant";
 import bcrypt from "bcryptjs";
 import config from "../../../config";
 import mongooseLeanVirtuals from "mongoose-lean-virtuals";
-const userSchema = new Schema<TUser,UserModal>(
+const userSchema = new Schema<TUser>(
   {
     firstName: {
       type: String,
@@ -50,7 +51,7 @@ const userSchema = new Schema<TUser,UserModal>(
     },
     role: {
       type: String,
-      enum: ["ADMIN", "USER"],
+      enum: USER_ROLES,
       default: "USER",
     },
     address: {
@@ -223,4 +224,4 @@ userSchema.pre("findOneAndUpdate", function (this: any, next) {
 // Plugin to include virtuals in lean queries.
 userSchema.plugin(mongooseLeanVirtuals);
 
-export const User = model<TUser,UserModal>("User", userSchema, "users");
+export const User = model<TUser>("User", userSchema, "users");
