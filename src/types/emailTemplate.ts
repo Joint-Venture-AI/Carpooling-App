@@ -20,4 +20,5 @@ export type TResetPassword = {
     | "theme-purple"
     | "theme-orange"
     | "theme-blue";
+    expiresIn?: Number;
 };

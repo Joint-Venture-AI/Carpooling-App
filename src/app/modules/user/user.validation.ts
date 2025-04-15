@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const createUser = z.object({
-  data: z
+  body: z
     .object({
       firstName: z
         .string()

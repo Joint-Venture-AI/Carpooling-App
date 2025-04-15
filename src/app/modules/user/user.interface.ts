@@ -21,7 +21,7 @@ export type TUser = {
   }[];
   authentication?: {
     isResetPassword: boolean;
-    oneTimeCode: number;
+    oneTimeCode: string;
     expireAt: Date;
   };
   passwordChangedAt?: Date;

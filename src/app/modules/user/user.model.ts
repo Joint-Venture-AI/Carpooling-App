@@ -120,7 +120,7 @@ const userSchema = new Schema<TUser, UserModal>(
         default: false,
       },
       oneTimeCode: {
-        type: Number,
+        type: String,
         default: null,
       },
 

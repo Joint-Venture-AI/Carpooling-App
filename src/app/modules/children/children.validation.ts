@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const createUser = z.object({
+const createChildren = z.object({
   data: z
     .object({
       firstName: z
@@ -15,17 +15,16 @@ const createUser = z.object({
         .max(50, "Last name cannot exceed 50 characters")
         .trim()
         .regex(/^[A-Za-z\s.'-]+$/, "Last name contains invalid characters"),
-      email: z.string().email("Invalid email address").trim().toLowerCase(),
-      password: z
+      image: z.string().nullable().optional(),
+      parentId: z
         .string()
-        .min(6, "Password must be at least 6 characters long")
-        .max(100, "Password is too long")
-        .trim(),
+        .min(24, "Parent ID is required")
+        .regex(/^[0-9a-fA-F]{24}$/, "Parent ID must be a valid ObjectId"),
     })
     .strict(),
 });
 
-const updateUser = z.object({
+const updateChildren = z.object({
   body: z
     .object({
       firstName: z
@@ -49,48 +48,18 @@ const updateUser = z.object({
         .trim()
         .optional(),
 
-      phoneNumber: z
-        .string()
-        .regex(/^\+?[1-9]\d{1,14}$/, "Please provide a valid phone number")
-        .trim()
-        .optional(),
+      
       image: z.string().nullable().optional(),
-      fcmToken: z.string().nullable().optional(),
-      address: z
-        .array(
-          z.object({
-            title: z.string(),
-            street: z.string(),
-            apartmentNumber: z.string(),
-            city: z.string(),
-            state: z.string(),
-            postalCode: z.string(),
-          })
-        )
-        .optional(),
+ 
     })
     .strict(),
 });
 
-const updateUserActivationStatus = z.object({
-  body: z
-    .object({
-      status: z.enum(["active", "delete"]),
-    })
-    .strict(),
-});
 
-const updateUserRole = z.object({
-  body: z
-    .object({
-      role: z.enum(["ADMIN", "USER"]),
-    })
-    .strict(),
-});
 
-export const UserValidation = {
-  createUser,
-  updateUser,
-  updateUserActivationStatus,
-  updateUserRole,
+
+
+export const ChildrenValidation = {
+  createChildren,
+  updateChildren,
 };

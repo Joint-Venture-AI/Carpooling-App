@@ -1,6 +1,6 @@
 export type TVerifyEmail = {
   email: string;
-  oneTimeCode: number;
+  oneTimeCode: string;
 };
 
 export type TLoginData = {

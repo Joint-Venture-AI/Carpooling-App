@@ -1,11 +1,9 @@
 import { StatusCodes } from "http-status-codes";
 import { JwtPayload, Secret } from "jsonwebtoken";
 import config from "../../../config";
-
 import { emailHelper } from "../../../helpers/emailHelper";
 import { jwtHelper } from "../../../helpers/jwtHelper";
 import { emailTemplate } from "../../../shared/emailTemplate";
-
 import cryptoToken from "../../../util/cryptoToken";
 import generateOTP from "../../../util/generateOTP";
 import { User } from "../user/user.model";
@@ -19,6 +17,7 @@ import {
   TVerifyEmail,
 } from "../../../types/auth";
 import { TUser } from "../user/user.interface";
+import UserCacheManage from "../user/user.cacheManage";
 //login
 const loginUserFromDB = async (payload: Partial<TLoginData>) => {
   const { email, password } = payload;
@@ -69,16 +68,18 @@ const forgetPasswordToDB = async (email: string) => {
 
   //send mail
   const otp = generateOTP();
+  console.log(otp, "otp");
   const value = {
     otp,
     email: isExistUser.email,
     name: isExistUser.firstName!,
-    theme: "theme-green" as
+    theme: "theme-red" as
       | "theme-green"
       | "theme-red"
       | "theme-purple"
       | "theme-orange"
       | "theme-blue",
+    expiresIn: 15,
   };
   const forgetPassword = emailTemplate.resetPassword(value);
 
@@ -87,7 +88,7 @@ const forgetPasswordToDB = async (email: string) => {
   //save to DB
   const authentication = {
     oneTimeCode: otp,
-    expireAt: new Date(Date.now() + 3 * 60000),
+    expireAt: new Date(Date.now() + 15 * 60000),
   };
 
   await User.findOneAndUpdate({ email }, { $set: { authentication } });
@@ -96,6 +97,7 @@ const forgetPasswordToDB = async (email: string) => {
 //verify email
 const verifyEmailToDB = async (payload: TVerifyEmail) => {
   const { email, oneTimeCode } = payload;
+  console.log(oneTimeCode, "new code");
   const isExistUser = await User.findOne({ email }).select("+authentication");
   if (!isExistUser) {
     throw new AppError(StatusCodes.BAD_REQUEST, "User doesn't exist!");
@@ -107,7 +109,7 @@ const verifyEmailToDB = async (payload: TVerifyEmail) => {
       "Please give the otp, check your email we send a code"
     );
   }
-
+  console.log(isExistUser.authentication?.oneTimeCode, "old code");
   if (isExistUser.authentication?.oneTimeCode !== oneTimeCode) {
     throw new AppError(StatusCodes.BAD_REQUEST, "You provided wrong otp");
   }
@@ -126,6 +128,7 @@ const verifyEmailToDB = async (payload: TVerifyEmail) => {
   await User.findOneAndUpdate(
     { _id: isExistUser._id },
     {
+      verified: true,
       authentication: {
         isResetPassword: true,
         oneTimeCode: null,
@@ -139,7 +142,7 @@ const verifyEmailToDB = async (payload: TVerifyEmail) => {
   await ResetToken.create({
     user: isExistUser._id,
     token: createToken,
-    expireAt: new Date(Date.now() + 5 * 60000),
+    expireAt: new Date(Date.now() + 15 * 60000),
   });
   message =
     "Verification Successful: Please securely store and utilize this code for reset password";
@@ -264,6 +267,7 @@ const deleteAccountToDB = async (user: JwtPayload) => {
   if (!result) {
     throw new AppError(StatusCodes.NOT_FOUND, "No User found");
   }
+  await UserCacheManage.updateUserCache(user.id);
 
   return result;
 };
