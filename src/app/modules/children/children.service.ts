@@ -4,8 +4,15 @@ import AppError from "../../errors/AppError";
 import ChildrenCacheManage from "./children.cacheManage";
 import { TChildren, TReturnChildren } from "./children.interface";
 import { Children } from "./children.model";
+import { User } from "../user/user.model";
 
 const createChild = async (child: TChildren): Promise<Partial<TChildren>> => {
+  console.log(child);
+   //check if parent is exists
+   const isParentExists = await User.findById(child.parentId);
+  if (!isParentExists) {
+    throw new AppError(StatusCodes.NOT_FOUND, "Parent not found");
+  }
   const newChild = await Children.create(child);
   await ChildrenCacheManage.updateChildrenCache(newChild._id.toString());
   return newChild;
@@ -91,4 +98,5 @@ export const ChildrenServices = {
   getAllChildrens,
   getChildrenById,
   updateChildren,
+  getChildrenByParentId,
 };

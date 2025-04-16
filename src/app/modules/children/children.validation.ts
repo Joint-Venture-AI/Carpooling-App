@@ -15,11 +15,16 @@ const createChildren = z.object({
         .max(50, "Last name cannot exceed 50 characters")
         .trim()
         .regex(/^[A-Za-z\s.'-]+$/, "Last name contains invalid characters"),
-      image: z.string().nullable().optional(),
       parentId: z
         .string()
         .min(24, "Parent ID is required")
         .regex(/^[0-9a-fA-F]{24}$/, "Parent ID must be a valid ObjectId"),
+      schoolName: z
+        .string()
+        .min(2, "School name is required")
+        .max(50, "School name cannot exceed 50 characters")
+        .trim()
+        .regex(/^[A-Za-z\s.'-]+$/, "School name contains invalid characters"),
     })
     .strict(),
 });
@@ -47,17 +52,9 @@ const updateChildren = z.object({
         )
         .trim()
         .optional(),
-
-      
-      image: z.string().nullable().optional(),
- 
     })
     .strict(),
 });
-
-
-
-
 
 export const ChildrenValidation = {
   createChildren,

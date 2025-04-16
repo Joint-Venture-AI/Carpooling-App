@@ -1,83 +1,73 @@
 import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
-import { UserServices } from "./children.service";
+import { ChildrenServices } from "./children.service";
 import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
 
-const createUser = catchAsync(async (req: Request, res: Response) => {
-  const user = await UserServices.createUser(req.body);
+const createChild = catchAsync(async (req: Request, res: Response) => {
+  const childrenData = JSON.parse(req.body.data);
+ let image = null;
+ if (req.files && "image" in req.files && req.files.image[0]) {
+  image = `/images/${req.files.image[0].filename}`;
+}
+  const childData = {
+    ...childrenData,
+    image: image,
+  };
+  const child = await ChildrenServices.createChild(childData);
   sendResponse(res, {
     statusCode: StatusCodes.CREATED,
     success: true,
-    message: "User created successfully",
-    data: user,
+    message: "Child created successfully",
+    data: child,
   });
 });
 
-const getAllUsers = catchAsync(async (req: Request, res: Response) => {
-  const usersRes = await UserServices.getAllUsers(req.query);
+const getAllChildrens = catchAsync(async (req: Request, res: Response) => {
+  const childrensRes = await ChildrenServices.getAllChildrens(req.query);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: "Users retrieved successfully",
-    data: usersRes.result,
-    meta: usersRes.meta,
+    message: "Children retrieved successfully",
+    data: childrensRes.result,
+    meta: childrensRes.meta,
   });
 });
 
-const getUserById = catchAsync(async (req: Request, res: Response) => {
-  const user = await UserServices.getUserById(req.params.id);
+const getChildrenById = catchAsync(async (req: Request, res: Response) => {
+  const child = await ChildrenServices.getChildrenById(req.params.id);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: "User retrieved successfully",
-    data: user,
+    message: "Child retrieved successfully",
+    data: child,
   });
 });
-const updateUser = catchAsync(async (req: Request, res: Response) => {
-  const user = await UserServices.updateUser(req.params.id, req.body);
+
+const getChildrenByParentId = catchAsync(async (req: Request, res: Response) => {
+  const children = await ChildrenServices.getChildrenByParentId(req.params.parentId);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: "User updated successfully",
-    data: user,
+    message: "Children retrieved successfully",
+    data: children,
   });
 });
 
-const updateUserActivationStatus = catchAsync(
-  async (req: Request, res: Response) => {
-    const { status } = req.body;
-    const user = await UserServices.updateUserActivationStatus(
-      req.params.id,
-      status
-    );
-    sendResponse(res, {
-      statusCode: StatusCodes.OK,
-      success: true,
-      message: `User ${
-        status === "active" ? "activated" : "deleted"
-      } successfully`,
-      data: user,
-    });
-  }
-);
-
-const updateUserRole = catchAsync(async (req: Request, res: Response) => {
-  const { role } = req.body;
-  const user = await UserServices.updateUserRole(req.params.id, role);
+const updateChildren = catchAsync(async (req: Request, res: Response) => {
+  const child = await ChildrenServices.updateChildren(req.params.id, req.body);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: "User role updated successfully",
-    data: user,
+    message: "Child updated successfully",
+    data: child,
   });
 });
 
-export const UserController = {
-  createUser,
-  getAllUsers,
-  getUserById,
-  updateUser,
-  updateUserActivationStatus,
-  updateUserRole,
+export const ChildrenController = {
+  createChild,
+  getAllChildrens,
+  getChildrenById,
+  getChildrenByParentId,
+  updateChildren,
 };
