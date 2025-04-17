@@ -33,7 +33,12 @@ const childrenSchema = new Schema<TChildren>(
     },
     schoolName: {
       type: String,
-      required: true,
+      required: [
+        function () {
+          return this.tag === "children";
+        },
+        "School name is required for children",
+      ],
       trim: true,
       minlength: [2, "School name must be at least 2 characters long"],
       maxlength: [50, "School name can't be more than 50 characters"],
@@ -44,6 +49,12 @@ const childrenSchema = new Schema<TChildren>(
       trim: true,
       default: null,
     },
+    tag: {
+      type: String,
+      enum: ["children", "spouse"],
+      default: "children",
+    },
+
   },
   {
     timestamps: true,

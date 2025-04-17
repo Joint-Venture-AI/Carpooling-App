@@ -7,14 +7,14 @@ import { Children } from "./children.model";
 import { User } from "../user/user.model";
 
 const createChild = async (child: TChildren): Promise<Partial<TChildren>> => {
-  console.log(child);
+
    //check if parent is exists
    const isParentExists = await User.findById(child.parentId);
   if (!isParentExists) {
     throw new AppError(StatusCodes.NOT_FOUND, "Parent not found");
   }
   const newChild = await Children.create(child);
-  await ChildrenCacheManage.updateChildrenCache(newChild._id.toString());
+  await ChildrenCacheManage.updateChildrenCache(newChild._id.toString(),child.parentId.toString());
   return newChild;
 };
 const getAllChildrens = async (
@@ -65,6 +65,10 @@ const getChildrenByParentId = async (
     parentId
   );
   if (cachedChildren) return cachedChildren;
+  const isParentExists = await User.findById(parentId);
+  if (!isParentExists) {
+    throw new AppError(StatusCodes.NOT_FOUND, "Parent not found");
+  }
 
   // If not cached, query the database using lean with virtuals enabled.
   const children = await Children.find({ parentId });

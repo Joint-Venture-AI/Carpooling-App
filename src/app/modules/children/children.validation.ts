@@ -24,9 +24,28 @@ const createChildren = z.object({
         .min(2, "School name is required")
         .max(50, "School name cannot exceed 50 characters")
         .trim()
-        .regex(/^[A-Za-z\s.'-]+$/, "School name contains invalid characters"),
+        .regex(/^[A-Za-z\s.'-]+$/, "School name contains invalid characters")
+        .optional(),
+      tag: z.enum(["children", "spouse"], {
+        required_error: "Tag is required",
+        invalid_type_error: "Tag must be either 'children' or 'spouse'",
+      }),
     })
-    .strict(),
+    .strict()
+    .refine(
+      (data) => !(data.tag === "children" && !data.schoolName),
+      {
+        message: "School name is required when tag is 'children'",
+        path: ["schoolName"],
+      }
+    )
+    .refine(
+      (data) => !(data.tag !== "children" && data.schoolName),
+      {
+        message: "School name is only allowed when tag is 'children'",
+        path: ["schoolName"],
+      }
+    ),
 });
 
 const updateChildren = z.object({
@@ -52,8 +71,26 @@ const updateChildren = z.object({
         )
         .trim()
         .optional(),
+        tag: z.enum(["children", "spouse"], {
+          required_error: "Tag is required",
+          invalid_type_error: "Tag must be either 'children' or 'spouse'",
+        }),
+        schoolName: z
+        .string()
+        .min(2, "School name is required")
+        .max(50, "School name cannot exceed 50 characters")
+        .trim()
+        .regex(/^[A-Za-z\s.'-]+$/, "School name contains invalid characters")
+        .optional(),                 
+      
     })
-    .strict(),
+    .strict() .refine(
+      (data) => !(data.tag !== "children" && data.schoolName),
+      {
+        message: "School name is only allowed when tag is 'children'",
+        path: ["schoolName"],
+      }
+    ),
 });
 
 export const ChildrenValidation = {

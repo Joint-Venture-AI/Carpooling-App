@@ -22,7 +22,7 @@ async function main() {
   try {
     // seedSuperAdmin();
     mongoose.connect(config.database_url as string);
-    logger.info(colors.green('🚀 Database connected successfully'));
+    logger.info(colors.green('🚀 Database connected successfully ne'));
 
     const port =
       typeof config.port === 'number' ? config.port : Number(config.port);

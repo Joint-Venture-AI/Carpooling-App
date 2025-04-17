@@ -4,8 +4,9 @@ export type TChildren = {
   parentId: Types.ObjectId;
   firstName: string;
   lastName: string;
-  schoolName: string;
+  schoolName?: string;
   image: string;
+  tag: "children"|"spouse";
 };
 
 export namespace TReturnChildren {

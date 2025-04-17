@@ -18,7 +18,7 @@ const ChildrenCacheManage = {
       }:${JSON.stringify(normalized)}`;
     },
   },
-  updateChildrenCache: async (childrenId: string) => {
+  updateChildrenCache: async (childrenId: string,parentId:string|null=null) => {
     // Remove the specific children cache
     await cacheService.deleteCache(
       ChildrenCacheManage.keys.childrenId(childrenId)
@@ -26,11 +26,17 @@ const ChildrenCacheManage = {
 
     // Remove the general children list cache
     await cacheService.deleteCache(ChildrenCacheManage.keys.childrenList);
-
+    if(parentId) {
+       await cacheService.deleteCache(
+      ChildrenCacheManage.keys.childrenIdWithParentId(parentId)
+    )
+    }
+   
     // Invalidate all query-based caches using pattern deletion
     await cacheService.deleteCacheByPattern(
       ChildrenCacheManage.keys.childrenListWithQuery + ":*"
     );
+    
   },
 
   getCacheSingleChildren: async (
@@ -41,9 +47,9 @@ const ChildrenCacheManage = {
     return cached ?? null;
   },
   getCacheChildrenByParentId: async (
-    childrenId: string
+    parentId: string
   ): Promise<TChildren[] | null> => {
-    const key = ChildrenCacheManage.keys.childrenIdWithParentId(childrenId);
+    const key = ChildrenCacheManage.keys.childrenIdWithParentId(parentId);
     const cached = await cacheService.getCache<TChildren[]>(key);
     return cached ?? null;
   },
