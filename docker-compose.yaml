@@ -13,11 +13,12 @@ services:
     env_file:
       - .env
     volumes:
+      - .:/app
       - carpooling-logs:/app/winston
       - /app/node_modules
-      - .:/app
     depends_on:
       - redis
+    command: pnpm run dev
 
   
 

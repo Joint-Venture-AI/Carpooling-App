@@ -74,7 +74,7 @@ const updateChildren = z.object({
         tag: z.enum(["children", "spouse"], {
           required_error: "Tag is required",
           invalid_type_error: "Tag must be either 'children' or 'spouse'",
-        }),
+        }).optional(),
         schoolName: z
         .string()
         .min(2, "School name is required")

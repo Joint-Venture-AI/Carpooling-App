@@ -55,7 +55,24 @@ const getChildrenByParentId = catchAsync(async (req: Request, res: Response) => 
 });
 
 const updateChildren = catchAsync(async (req: Request, res: Response) => {
-  const child = await ChildrenServices.updateChildren(req.params.id, req.body);
+
+  const childrenData = JSON.parse(req.body.data);
+ let image = null;
+ if (req.files && "image" in req.files && req.files.image[0]) {
+  image = `/images/${req.files.image[0].filename}`;
+}
+  const childData = {
+    ...childrenData,
+    image: image,
+  };
+  if (childData.image === null) {
+    delete childData.image;
+  }
+
+
+
+
+  const child = await ChildrenServices.updateChildren(req.params.id,childData);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,

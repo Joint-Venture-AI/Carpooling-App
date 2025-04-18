@@ -18,7 +18,8 @@ router.get("/:id", ChildrenController.getChildrenById);
 router.get("/parent/:parentId", ChildrenController.getChildrenByParentId); // New route
 router.patch(
   "/:id",
-  validateRequest(ChildrenValidation.updateChildren),
+  fileUploadHandler,
+  // validateRequest(ChildrenValidation.updateChildren),
   ChildrenController.updateChildren
 );
 

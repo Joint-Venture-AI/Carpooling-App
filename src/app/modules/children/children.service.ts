@@ -5,16 +5,19 @@ import ChildrenCacheManage from "./children.cacheManage";
 import { TChildren, TReturnChildren } from "./children.interface";
 import { Children } from "./children.model";
 import { User } from "../user/user.model";
+import unlinkFile from "../../../shared/unlinkFile";
 
 const createChild = async (child: TChildren): Promise<Partial<TChildren>> => {
-
-   //check if parent is exists
-   const isParentExists = await User.findById(child.parentId);
+  //check if parent is exists
+  const isParentExists = await User.findById(child.parentId);
   if (!isParentExists) {
     throw new AppError(StatusCodes.NOT_FOUND, "Parent not found");
   }
   const newChild = await Children.create(child);
-  await ChildrenCacheManage.updateChildrenCache(newChild._id.toString(),child.parentId.toString());
+  await ChildrenCacheManage.updateChildrenCache(
+    newChild._id.toString(),
+    child.parentId.toString()
+  );
   return newChild;
 };
 const getAllChildrens = async (
@@ -81,21 +84,43 @@ const getChildrenByParentId = async (
   await ChildrenCacheManage.setCacheChildrenByParentId(parentId, children);
   return children;
 };
-
 const updateChildren = async (
   id: string,
   updateData: Partial<TReturnChildren.updateChildren>
 ): Promise<Partial<TReturnChildren.updateChildren>> => {
-  const children = await Children.findByIdAndUpdate(id, updateData, {
+  console.log("inside", updateData);
+
+  let oldImage: string | undefined;
+
+  if (updateData.image) {
+    const existing = await Children.findById(id).select("image");
+    if (!existing) {
+      throw new AppError(StatusCodes.NOT_FOUND, "Children not found");
+    }
+    oldImage = existing.image;
+  }
+
+  const updatedChild = await Children.findByIdAndUpdate(id, updateData, {
     new: true,
   });
-  if (!children) {
-    throw new AppError(StatusCodes.NOT_FOUND, "Children not found");
+
+  if (!updatedChild) {
+    throw new AppError(StatusCodes.NOT_FOUND, "Children update failed");
   }
-  //remove cache
+
+  if (updateData.image && oldImage && oldImage !== updateData.image) {
+    try {
+      await unlinkFile(oldImage);
+    } catch (error) {
+      console.error("Failed to delete old image:", error);
+    }
+  }
+
   await ChildrenCacheManage.updateChildrenCache(id);
-  return children;
+
+  return updatedChild;
 };
+
 
 export const ChildrenServices = {
   createChild,

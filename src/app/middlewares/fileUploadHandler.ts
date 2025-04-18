@@ -301,8 +301,8 @@ const fileUploadHandler = (req: Request, res: Response, next: NextFunction) => {
           // Create new filename by replacing .tmp with .webp
           const newFilePath = inputFilePath.replace(/\.tmp$/, ".webp");
 
-          // Use sharp to convert the file to WebP format with compression (quality: 55)
-          await sharp(inputFilePath).webp({ quality: 55 }).toFile(newFilePath);
+          await sharp(inputFilePath).resize({width:1024}).webp({ quality: 40, effort: 6,
+            nearLossless: false }).toFile(newFilePath);
 
           // Remove the temporary file
           fs.unlinkSync(inputFilePath);

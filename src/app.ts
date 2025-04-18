@@ -38,7 +38,7 @@ app.get("/", (req: Request, res: Response) => {
   res.send(
     ` <div style="display: flex; align-items: center; justify-content: center; height: 100vh; background: #f5f3ff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
     <div style="text-align: center; padding: 2rem 3rem; background-color: #ffffff; border-radius: 16px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);">
-      <h1 style="font-size: 2.5rem; color: #7C3AED; margin-bottom: 1rem;">Welcome 👋</h1>
+      <h1 style="font-size: 2.5rem; color: #7C3AED; margin-bottom: 1rem;">Welcome👋</h1>
       <p style="font-size: 1.2rem; color: #555;">I'm here to help you. How can I assist today?</p>
       <div style="margin-top: 2rem;">
         <p style="color: #777;">Want to see more projects or contact me?</p>

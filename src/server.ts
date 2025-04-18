@@ -22,7 +22,7 @@ async function main() {
   try {
     // seedSuperAdmin();
     mongoose.connect(config.database_url as string);
-    logger.info(colors.green('🚀 Database connected successfully ne'));
+    logger.info(colors.green('🚀 Database connected successfully'));
 
     const port =
       typeof config.port === 'number' ? config.port : Number(config.port);
@@ -58,9 +58,13 @@ async function main() {
 main();
 
 //SIGTERM
-process.on('SIGTERM', () => {
-  logger.info('SIGTERM IS RECEIVE');
+process.on('SIGTERM', async () => {
+  logger.info('SIGTERM received, shutting down gracefully...');
   if (server) {
-    server.close();
+    server.close(() => {
+      logger.info('HTTP server closed.');
+      // Close DB or Redis here if needed
+      process.exit(0);
+    });
   }
 });
