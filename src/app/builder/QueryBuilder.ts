@@ -63,12 +63,29 @@ export class QueryBuilder<T> {
   filter() {
     const queryObj = { ...this.query };
     const excludeFields = ["searchTerm", "page", "limit", "sortBy", "fields"];
-    if (queryObj.specialist) {
-      queryObj.specialist = { $eq: queryObj.specialist as string };
+
+    if (queryObj.sender && queryObj.receiver) {
+      const senderValue = queryObj.sender as string;
+      const receiverValue = queryObj.receiver as string;
+
+      const andCondition = {
+        $and: [{ sender: senderValue }, { receiver: receiverValue }],
+      };
+
+      delete queryObj.sender;
+      delete queryObj.receiver;
+
+      Object.assign(queryObj, andCondition);
+    } else {
+      if (queryObj.sender) {
+        queryObj.sender = { $eq: queryObj.sender as string };
+      }
+
+      if (queryObj.receiver) {
+        queryObj.receiver = { $eq: queryObj.receiver as string };
+      }
     }
-    if (queryObj.user) {
-      queryObj.user = { $eq: queryObj.user as string };
-    }
+
     excludeFields.forEach((e) => delete queryObj[e]);
     Object.keys(queryObj).forEach((key) => {
       if (typeof queryObj[key] === "string") {

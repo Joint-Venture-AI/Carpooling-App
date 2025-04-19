@@ -1,21 +1,22 @@
-import { createClient, RedisClientType } from 'redis';
+import { createClient, RedisClientType } from "redis";
 
 class RedisClient {
   public client: RedisClientType;
 
   constructor() {
     this.client = createClient({
-       url: process.env.REDIS_URL || 'redis://redis:6379',
+      url: "redis://127.0.0.1:6379",
+      // 'redis://redis:6379',
     });
-    this.client.on('error', (err: Error) => {
-      console.error('Redis Client Error:', err);
+    this.client.on("error", (err: Error) => {
+      console.error("Redis Client Error:", err);
     });
   }
 
   async connect(): Promise<void> {
     if (!this.client.isOpen) {
       await this.client.connect();
-      console.log('Connected to Redis');
+      console.log("Connected to Redis");
     }
   }
 
@@ -25,7 +26,11 @@ class RedisClient {
     }
   }
 
-  async set(key: string, value: string, expiryInSec: number = 3600): Promise<void> {
+  async set(
+    key: string,
+    value: string,
+    expiryInSec: number = 3600
+  ): Promise<void> {
     try {
       await this.ensureConnected();
       await this.client.setEx(key, expiryInSec, value);
@@ -52,7 +57,7 @@ class RedisClient {
       console.error(`Error deleting key ${key}:`, err);
     }
   }
-  
+
   // New method to support keys lookup
   async keys(pattern: string): Promise<string[]> {
     await this.ensureConnected();

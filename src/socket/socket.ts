@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import { Types } from "mongoose";
+import { handleSendMessage } from "./userMessage/message";
 
 export const users = new Map();
 
@@ -28,6 +28,10 @@ const setupSocket = (server: any) => {
         activeChatUsers.delete(data.userId);
       }
     });
+    socket.on("sendMessage", (data) => {
+      handleSendMessage(data); // Call the function to handle sending messages
+    });
+    //
 
     socket.on("disconnect", () => {
       users.forEach((socketId, userId) => {
