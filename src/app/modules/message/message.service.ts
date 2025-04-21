@@ -7,7 +7,6 @@ const createMessage = async (payload: Partial<TMessage>) => {
     throw new Error("sender and receiver are required");
   }
   const result = await Message.create(payload);
-  console.log(result, "result");
   return result;
 };
 
@@ -20,7 +19,12 @@ const getAllMessage = async (query: Record<string, any>) => {
   const { sender, receiver } = query;
 
     const messageQuery = new QueryBuilder(
-      Message.find({ sender, receiver})
+      Message.find({
+        $or: [
+          { sender, receiver },
+          { sender: receiver, receiver: sender }
+        ]
+      })
         .populate("sender")
         .populate("receiver"),
       query
